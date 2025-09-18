@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
+// Add this at the top of your App component (temporary debug)
+console.log("Environment Variables:", {
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+  SOCKET_URL: import.meta.env.VITE_SOCKET_URL,
+  ENABLE_SOCKET: import.meta.env.VITE_ENABLE_SOCKET,
+});
+
 function App() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
