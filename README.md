@@ -33,8 +33,8 @@ A modern, responsive React frontend for the RAG-powered news chatbot, built for 
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd
+git clone https://github.com/apurba-striker/rag-ai-frontend
+cd rag-ai-frontend
 
 # Install dependencies
 npm install
