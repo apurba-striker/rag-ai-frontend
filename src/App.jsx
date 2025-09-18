@@ -21,40 +21,20 @@ function App() {
 
   const createSession = async () => {
     try {
-      const response = await fetch("/api/session/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+      // 🔥 HARDCODE BACKEND URL (temporary but guaranteed to work)
+      const response = await fetch(
+        "https://rag-ai-backend-t32s.onrender.com/api/session/create",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       const data = await response.json();
       setSessionId(data.sessionId);
       console.log("Session created:", data.sessionId);
     } catch (error) {
       console.error("Error creating session:", error);
-      // Fallback session ID
       setSessionId("fallback-session-" + Date.now());
-    }
-  };
-
-  const resetSession = async () => {
-    if (!sessionId) return;
-
-    try {
-      // Clear current session
-      await fetch(`/api/session/${sessionId}`, {
-        method: "DELETE",
-      });
-
-      // Clear messages locally
-      setMessages([]);
-
-      // Create new session
-      await createSession();
-
-      console.log("Session reset successfully");
-    } catch (error) {
-      console.error("Error resetting session:", error);
-      // Fallback: just clear messages locally
-      setMessages([]);
     }
   };
 
@@ -73,14 +53,18 @@ function App() {
     try {
       console.log("Sending message with sessionId:", sessionId);
 
-      const response = await fetch("/api/chat/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId: sessionId,
-          message: message,
-        }),
-      });
+      // 🔥 HARDCODE BACKEND URL
+      const response = await fetch(
+        "https://rag-ai-backend-t32s.onrender.com/api/chat/send",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId: sessionId,
+            message: message,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -106,7 +90,7 @@ function App() {
         ...prev,
         {
           type: "bot",
-          content: `Error: ${error.message}. Please make sure the backend server is running on port 5000.`,
+          content: `Error: ${error.message}. Please make sure the backend server is running.`,
           timestamp: Date.now(),
           id: "error-" + Date.now(),
         },
@@ -115,13 +99,6 @@ function App() {
 
     setMessage("");
     setLoading(false);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
   };
 
   // Auto-resize textarea
