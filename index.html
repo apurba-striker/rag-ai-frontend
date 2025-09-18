@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="RAG-powered news chatbot using AI and vector search"
+    />
+    <meta name="keywords" content="AI, chatbot, news, RAG, Gemini, React" />
+    <meta name="author" content="Voosh Assignment" />
+    <title>RAG News Chatbot - AI-Powered News Assistant</title>
+
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Meta tags for social sharing -->
+    <meta property="og:title" content="RAG News Chatbot" />
+    <meta
+      property="og:description"
+      content="AI-powered news assistant using RAG pipeline"
+    />
+    <meta property="og:type" content="website" />
+
+    <style>
+      /* Critical CSS for initial load */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #0f172a;
+        color: #f8fafc;
+        height: 100%;
+      }
+
+      #root {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Loading animation */
+      .initial-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(59, 130, 246, 0.1);
+        border-top: 4px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        color: #cbd5e1;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="initial-loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading RAG News Chatbot...</div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+@import "@styles/variables";
+@import "@styles/mixins";
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba($bg-secondary, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid $border-color;
+  box-shadow: 0 2px 20px rgba($shadow-color, 0.1);
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      padding: 0.75rem 1rem;
+      gap: 1rem;
+    }
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__logo {
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__title {
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $accent-primary;
+      margin: 0;
+      line-height: 1.2;
+
+      @media (max-width: 768px) {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  &__subtitle {
+    font-size: 0.75rem;
+    color: $text-secondary;
+    font-weight: 500;
+
+    @media (max-width: 768px) {
+      font-size: 0.7rem;
+    }
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba($accent-primary, 0.1);
+    border-radius: 2rem;
+    border: 1px solid rgba($accent-primary, 0.2);
+
+    @media (max-width: 768px) {
+      padding: 0.25rem 0.75rem;
+    }
+  }
+
+  &__status-icon {
+    font-size: 1rem;
+
+    &--connected {
+      color: $success-color;
+      animation: pulse 2s infinite;
+    }
+
+    &--connecting {
+      color: $warning-color;
+      animation: spin 1s linear infinite;
+    }
+
+    &--disconnected {
+      color: $error-color;
+    }
+  }
+
+  &__status-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text-primary;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  &__session {
+    position: relative;
+    margin-left: auto;
+
+    @media (max-width: 768px) {
+      margin-left: 0;
+    }
+  }
+
+  &__session-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba($bg-primary, 0.5);
+    border: 1px solid $border-color;
+    border-radius: 2rem;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba($bg-primary, 0.8);
+      border-color: $accent-primary;
+    }
+  }
+
+  &__session-icon {
+    font-size: 1rem;
+    color: $accent-primary;
+  }
+
+  &__session-count {
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: $accent-primary;
+    color: $bg-primary;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    min-width: 1.5rem;
+    text-align: center;
+  }
+
+  &__session-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: $bg-secondary;
+    border: 1px solid $border-color;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    min-width: 200px;
+    box-shadow: 0 10px 40px rgba($shadow-color, 0.15);
+    z-index: 100;
+  }
+
+  &__session-info {
+    p {
+      margin: 0.25rem 0;
+      font-size: 0.875rem;
+
+      &:first-child {
+        font-weight: 600;
+        color: $accent-primary;
+      }
+    }
+  }
+
+  &__session-id {
+    font-family: $font-mono;
+    background: rgba($accent-primary, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba($accent-primary, 0.2);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+
+    @media (max-width: 768px) {
+      gap: 0.5rem;
+    }
+  }
+
+  &__progress {
+    height: 2px;
+    background: $accent-primary;
+    transform-origin: left;
+    opacity: 0.7;
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

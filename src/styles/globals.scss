@@ -1,0 +1,909 @@
+@import "variables";
+@import "mixins";
+
+// ============================================================================
+// GLOBAL STYLES
+// ============================================================================
+
+// CSS Custom Properties (for dynamic theming)
+// ----------------------------------------------------------------------------
+:root {
+  // Colors
+  --accent-primary: #{$accent-primary};
+  --accent-secondary: #{$accent-secondary};
+  --bg-primary: #{$bg-primary};
+  --bg-secondary: #{$bg-secondary};
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --border-color: #{$border-color};
+
+  // Spacing
+  --spacing-sm: #{$spacing-sm};
+  --spacing-md: #{$spacing-md};
+  --spacing-lg: #{$spacing-lg};
+  --spacing-xl: #{$spacing-xl};
+
+  // Border radius
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --radius-xl: #{$radius-xl};
+
+  // Transitions
+  --transition-fast: #{$transition-fast};
+  --transition-normal: #{$transition-normal};
+  --transition-slow: #{$transition-slow};
+
+  // Z-index
+  --z-dropdown: #{$z-dropdown};
+  --z-modal: #{$z-modal};
+  --z-toast: #{$z-toast};
+}
+
+// Reset & Base Styles
+// ----------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @include mobile {
+    font-size: 14px;
+  }
+}
+
+body {
+  min-height: 100%;
+  font-family: $font-primary;
+  font-size: $font-base;
+  font-weight: $font-weight-normal;
+  line-height: $leading-normal;
+  color: $text-primary;
+  background: $bg-primary;
+  overflow-x: hidden;
+
+  // Prevent text selection on UI elements
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  // Allow text selection on content
+  .selectable {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Typography
+// ----------------------------------------------------------------------------
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-secondary;
+  font-weight: $font-weight-bold;
+  line-height: $leading-tight;
+  color: $text-primary;
+  margin: 0;
+}
+
+h1 {
+  font-size: $font-4xl;
+
+  @include mobile {
+    font-size: $font-3xl;
+  }
+}
+
+h2 {
+  font-size: $font-3xl;
+
+  @include mobile {
+    font-size: $font-2xl;
+  }
+}
+
+h3 {
+  font-size: $font-2xl;
+
+  @include mobile {
+    font-size: $font-xl;
+  }
+}
+
+h4 {
+  font-size: $font-xl;
+
+  @include mobile {
+    font-size: $font-lg;
+  }
+}
+
+h5 {
+  font-size: $font-lg;
+}
+
+h6 {
+  font-size: $font-base;
+  font-weight: $font-weight-semibold;
+}
+
+p {
+  margin: 0;
+  line-height: $leading-relaxed;
+  color: $text-secondary;
+}
+
+a {
+  color: $accent-primary;
+  text-decoration: none;
+  transition: color $transition-normal $ease-out;
+
+  &:hover {
+    color: lighten($accent-primary, 10%);
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+strong,
+b {
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+small {
+  font-size: $font-sm;
+  color: $text-tertiary;
+}
+
+code {
+  font-family: $font-mono;
+  font-size: 0.875em;
+  background: rgba($accent-primary, 0.1);
+  padding: 0.125rem 0.375rem;
+  border-radius: $radius-sm;
+  color: $accent-primary;
+}
+
+pre {
+  font-family: $font-mono;
+  background: $bg-secondary;
+  padding: $spacing-lg;
+  border-radius: $radius-lg;
+  overflow-x: auto;
+  border: 1px solid $border-color;
+
+  @include scrollbar-style;
+
+  code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    color: inherit;
+  }
+}
+
+// Lists
+// ----------------------------------------------------------------------------
+ul,
+ol {
+  padding-left: $spacing-xl;
+  margin: $spacing-md 0;
+
+  li {
+    margin-bottom: $spacing-sm;
+    line-height: $leading-relaxed;
+    color: $text-secondary;
+  }
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+// Tables
+// ----------------------------------------------------------------------------
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: $spacing-lg 0;
+  background: $bg-secondary;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+}
+
+th,
+td {
+  padding: $spacing-md $spacing-lg;
+  text-align: left;
+  border-bottom: 1px solid $border-color;
+}
+
+th {
+  background: $bg-tertiary;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+}
+
+td {
+  color: $text-secondary;
+}
+
+tr:last-child {
+  th,
+  td {
+    border-bottom: none;
+  }
+}
+
+// Forms
+// ----------------------------------------------------------------------------
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+textarea,
+select {
+  @include form-input;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+label {
+  @include form-label;
+}
+
+button {
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+// Custom Focus Styles
+// ----------------------------------------------------------------------------
+:focus-visible {
+  outline: 2px solid $accent-primary;
+  outline-offset: 2px;
+}
+
+// Selection Styles
+// ----------------------------------------------------------------------------
+::selection {
+  background: rgba($accent-primary, 0.3);
+  color: $text-primary;
+}
+
+::-moz-selection {
+  background: rgba($accent-primary, 0.3);
+  color: $text-primary;
+}
+
+// Scrollbar Styles
+// ----------------------------------------------------------------------------
+body {
+  @include scrollbar-style;
+}
+
+// Print Styles
+// ----------------------------------------------------------------------------
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+// Utility Classes
+// ----------------------------------------------------------------------------
+
+// Display
+.hidden {
+  display: none !important;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+.block {
+  display: block !important;
+}
+
+.inline-block {
+  display: inline-block !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.inline-flex {
+  display: inline-flex !important;
+}
+
+.grid {
+  display: grid !important;
+}
+
+// Flexbox
+.flex-col {
+  flex-direction: column !important;
+}
+
+.flex-row {
+  flex-direction: row !important;
+}
+
+.items-center {
+  align-items: center !important;
+}
+
+.items-start {
+  align-items: flex-start !important;
+}
+
+.items-end {
+  align-items: flex-end !important;
+}
+
+.justify-center {
+  justify-content: center !important;
+}
+
+.justify-start {
+  justify-content: flex-start !important;
+}
+
+.justify-end {
+  justify-content: flex-end !important;
+}
+
+.justify-between {
+  justify-content: space-between !important;
+}
+
+.justify-around {
+  justify-content: space-around !important;
+}
+
+.flex-1 {
+  flex: 1 1 0% !important;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0 !important;
+}
+
+// Text Alignment
+.text-left {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-justify {
+  text-align: justify !important;
+}
+
+// Text Transform
+.uppercase {
+  text-transform: uppercase !important;
+}
+
+.lowercase {
+  text-transform: lowercase !important;
+}
+
+.capitalize {
+  text-transform: capitalize !important;
+}
+
+// Font Weights
+.font-light {
+  font-weight: $font-weight-light !important;
+}
+
+.font-normal {
+  font-weight: $font-weight-normal !important;
+}
+
+.font-medium {
+  font-weight: $font-weight-medium !important;
+}
+
+.font-semibold {
+  font-weight: $font-weight-semibold !important;
+}
+
+.font-bold {
+  font-weight: $font-weight-bold !important;
+}
+
+// Spacing
+.m-0 {
+  margin: 0 !important;
+}
+.m-1 {
+  margin: $spacing-xs !important;
+}
+.m-2 {
+  margin: $spacing-sm !important;
+}
+.m-3 {
+  margin: $spacing-md !important;
+}
+.m-4 {
+  margin: $spacing-lg !important;
+}
+.m-5 {
+  margin: $spacing-xl !important;
+}
+.m-6 {
+  margin: $spacing-2xl !important;
+}
+.m-8 {
+  margin: $spacing-3xl !important;
+}
+
+.mt-0 {
+  margin-top: 0 !important;
+}
+.mt-1 {
+  margin-top: $spacing-xs !important;
+}
+.mt-2 {
+  margin-top: $spacing-sm !important;
+}
+.mt-3 {
+  margin-top: $spacing-md !important;
+}
+.mt-4 {
+  margin-top: $spacing-lg !important;
+}
+.mt-5 {
+  margin-top: $spacing-xl !important;
+}
+.mt-6 {
+  margin-top: $spacing-2xl !important;
+}
+.mt-8 {
+  margin-top: $spacing-3xl !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mb-1 {
+  margin-bottom: $spacing-xs !important;
+}
+.mb-2 {
+  margin-bottom: $spacing-sm !important;
+}
+.mb-3 {
+  margin-bottom: $spacing-md !important;
+}
+.mb-4 {
+  margin-bottom: $spacing-lg !important;
+}
+.mb-5 {
+  margin-bottom: $spacing-xl !important;
+}
+.mb-6 {
+  margin-bottom: $spacing-2xl !important;
+}
+.mb-8 {
+  margin-bottom: $spacing-3xl !important;
+}
+
+.ml-0 {
+  margin-left: 0 !important;
+}
+.ml-1 {
+  margin-left: $spacing-xs !important;
+}
+.ml-2 {
+  margin-left: $spacing-sm !important;
+}
+.ml-3 {
+  margin-left: $spacing-md !important;
+}
+.ml-4 {
+  margin-left: $spacing-lg !important;
+}
+.ml-5 {
+  margin-left: $spacing-xl !important;
+}
+.ml-6 {
+  margin-left: $spacing-2xl !important;
+}
+.ml-8 {
+  margin-left: $spacing-3xl !important;
+}
+
+.mr-0 {
+  margin-right: 0 !important;
+}
+.mr-1 {
+  margin-right: $spacing-xs !important;
+}
+.mr-2 {
+  margin-right: $spacing-sm !important;
+}
+.mr-3 {
+  margin-right: $spacing-md !important;
+}
+.mr-4 {
+  margin-right: $spacing-lg !important;
+}
+.mr-5 {
+  margin-right: $spacing-xl !important;
+}
+.mr-6 {
+  margin-right: $spacing-2xl !important;
+}
+.mr-8 {
+  margin-right: $spacing-3xl !important;
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+.p-1 {
+  padding: $spacing-xs !important;
+}
+.p-2 {
+  padding: $spacing-sm !important;
+}
+.p-3 {
+  padding: $spacing-md !important;
+}
+.p-4 {
+  padding: $spacing-lg !important;
+}
+.p-5 {
+  padding: $spacing-xl !important;
+}
+.p-6 {
+  padding: $spacing-2xl !important;
+}
+.p-8 {
+  padding: $spacing-3xl !important;
+}
+
+// Border Radius
+.rounded-none {
+  border-radius: 0 !important;
+}
+.rounded-sm {
+  border-radius: $radius-sm !important;
+}
+.rounded-md {
+  border-radius: $radius-md !important;
+}
+.rounded-lg {
+  border-radius: $radius-lg !important;
+}
+.rounded-xl {
+  border-radius: $radius-xl !important;
+}
+.rounded-2xl {
+  border-radius: $radius-2xl !important;
+}
+.rounded-3xl {
+  border-radius: $radius-3xl !important;
+}
+.rounded-full {
+  border-radius: $radius-full !important;
+}
+
+// Colors
+.text-primary {
+  color: $text-primary !important;
+}
+.text-secondary {
+  color: $text-secondary !important;
+}
+.text-tertiary {
+  color: $text-tertiary !important;
+}
+.text-accent {
+  color: $accent-primary !important;
+}
+.text-success {
+  color: $success-color !important;
+}
+.text-warning {
+  color: $warning-color !important;
+}
+.text-error {
+  color: $error-color !important;
+}
+
+.bg-primary {
+  background-color: $bg-primary !important;
+}
+.bg-secondary {
+  background-color: $bg-secondary !important;
+}
+.bg-accent {
+  background-color: $accent-primary !important;
+}
+.bg-success {
+  background-color: $success-color !important;
+}
+.bg-warning {
+  background-color: $warning-color !important;
+}
+.bg-error {
+  background-color: $error-color !important;
+}
+
+// Shadows
+.shadow-sm {
+  box-shadow: $shadow-sm !important;
+}
+.shadow-md {
+  box-shadow: $shadow-md !important;
+}
+.shadow-lg {
+  box-shadow: $shadow-lg !important;
+}
+.shadow-xl {
+  box-shadow: $shadow-xl !important;
+}
+.shadow-2xl {
+  box-shadow: $shadow-2xl !important;
+}
+.shadow-none {
+  box-shadow: none !important;
+}
+
+// Transitions
+.transition {
+  transition: all $transition-normal $ease-out !important;
+}
+
+.transition-fast {
+  transition: all $transition-fast $ease-out !important;
+}
+
+.transition-slow {
+  transition: all $transition-slow $ease-out !important;
+}
+
+// Responsive Utilities
+@include mobile {
+  .mobile\:hidden {
+    display: none !important;
+  }
+
+  .mobile\:block {
+    display: block !important;
+  }
+
+  .mobile\:flex {
+    display: flex !important;
+  }
+
+  .mobile\:text-center {
+    text-align: center !important;
+  }
+}
+
+@include desktop {
+  .desktop\:hidden {
+    display: none !important;
+  }
+
+  .desktop\:block {
+    display: block !important;
+  }
+
+  .desktop\:flex {
+    display: flex !important;
+  }
+}
+
+// Animation Classes
+.animate-fade-in {
+  @include fade-in;
+}
+
+.animate-slide-in-up {
+  @include slide-in-up;
+}
+
+.animate-bounce-in {
+  @include bounce-in;
+}
+
+.animate-pulse {
+  @include pulse;
+}
+
+.animate-spin {
+  @include spin;
+}
+
+// Accessibility
+.sr-only {
+  @include visually-hidden;
+}
+
+.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+// No-interaction overlay (for loading states)
+.no-interaction {
+  pointer-events: none;
+  user-select: none;
+}
+
+// Glass effect utility
+.glass {
+  @include glass-effect;
+}
+
+// Truncate text
+.truncate {
+  @include text-truncate;
+}
+
+// Line clamp utilities
+.line-clamp-1 {
+  @include text-clamp(1);
+}
+
+.line-clamp-2 {
+  @include text-clamp(2);
+}
+
+.line-clamp-3 {
+  @include text-clamp(3);
+}
+
+// Custom scrollbar for specific elements
+.custom-scrollbar {
+  @include scrollbar-style;
+}
+
+.no-scrollbar {
+  @include hide-scrollbar;
+}
+
+// Hover effects
+.hover-lift {
+  @include hover-lift;
+}
+
+// Loading state styles
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: progress;
+}
+
+// Error state styles
+.error-state {
+  border-color: $error-color !important;
+  color: $error-color !important;
+}
+
+.success-state {
+  border-color: $success-color !important;
+  color: $success-color !important;
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  :root {
+    --accent-primary: #4f9eff;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --border-color: #666666;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Dark mode preference
+@include dark-mode {
+  // Already using dark colors by default
+}
+
+// Light mode (for future implementation)
+@include light-mode {
+  // Light mode styles would go here
+}
