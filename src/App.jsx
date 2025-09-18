@@ -14,27 +14,70 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
 
+  // Backend URL - use environment variable or fallback
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://rag-ai-backend-t32s.onrender.com";
+
   // Create session on component mount
   useEffect(() => {
     createSession();
   }, []);
 
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    const messagesContainer = document.getElementById("messages-container");
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }, [messages]);
+
   const createSession = async () => {
     try {
-      // 🔥 HARDCODE BACKEND URL (temporary but guaranteed to work)
-      const response = await fetch(
-        "https://rag-ai-backend-t32s.onrender.com/api/session/create",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
+      console.log(
+        "🔍 Creating session at:",
+        `${API_BASE_URL}/api/session/create`
       );
+
+      const response = await fetch(`${API_BASE_URL}/api/session/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
       const data = await response.json();
       setSessionId(data.sessionId);
-      console.log("Session created:", data.sessionId);
+      console.log("✅ Session created:", data.sessionId);
     } catch (error) {
-      console.error("Error creating session:", error);
+      console.error("❌ Error creating session:", error);
+      // Fallback session ID
       setSessionId("fallback-session-" + Date.now());
+    }
+  };
+
+  const resetSession = async () => {
+    if (!sessionId) return;
+
+    try {
+      // Clear current session
+      await fetch(`${API_BASE_URL}/api/session/${sessionId}`, {
+        method: "DELETE",
+      });
+
+      // Clear messages locally
+      setMessages([]);
+
+      // Create new session
+      await createSession();
+
+      console.log("Session reset successfully");
+    } catch (error) {
+      console.error("Error resetting session:", error);
+      // Fallback: just clear messages locally
+      setMessages([]);
     }
   };
 
@@ -51,20 +94,17 @@ function App() {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      console.log("Sending message with sessionId:", sessionId);
+      console.log("🔍 Sending message to:", `${API_BASE_URL}/api/chat/send`);
+      console.log("🔍 Session ID:", sessionId);
 
-      // 🔥 HARDCODE BACKEND URL
-      const response = await fetch(
-        "https://rag-ai-backend-t32s.onrender.com/api/chat/send",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sessionId: sessionId,
-            message: message,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/chat/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: sessionId,
+          message: message,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -85,20 +125,49 @@ function App() {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("❌ Error:", error);
+
+      let errorMessage = "";
+      if (
+        error.message.includes("503") ||
+        error.message.includes("overloaded")
+      ) {
+        errorMessage = `🤖 AI is currently overloaded. The response has been generated using available sources. Please try asking again in a few minutes for a more detailed AI analysis.`;
+      } else if (
+        error.message.includes("quota") ||
+        error.message.includes("rate limit")
+      ) {
+        errorMessage = `⏰ AI service has reached its rate limit. Please wait a moment and try again.`;
+      } else if (
+        error.message.includes("network") ||
+        error.message.includes("timeout")
+      ) {
+        errorMessage = `🌐 Network issue detected. Please check your connection and try again.`;
+      } else {
+        errorMessage = `❌ Error: ${error.message}. Please check if the backend server is running.`;
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           type: "bot",
-          content: `Error: ${error.message}. Please make sure the backend server is running.`,
+          content: errorMessage,
           timestamp: Date.now(),
           id: "error-" + Date.now(),
+          isError: true,
         },
       ]);
     }
 
     setMessage("");
     setLoading(false);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   // Auto-resize textarea
@@ -114,6 +183,9 @@ function App() {
         <div className="loading-screen">
           <div className="loading-spinner"></div>
           <p>Initializing RAG News Chatbot...</p>
+          <small style={{ marginTop: "1rem", opacity: 0.7 }}>
+            Connecting to: {API_BASE_URL}
+          </small>
         </div>
       </div>
     );
